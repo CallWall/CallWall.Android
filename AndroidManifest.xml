@@ -3,7 +3,14 @@
           package="com.CallWall.Android"
           android:versionCode="1"
           android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="16"/>
+    <uses-sdk android:minSdkVersion="14"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!--Validate that these are required.-->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!--end:Validate-->
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
         <activity android:name="MyActivity"
                   android:label="@string/app_name">
