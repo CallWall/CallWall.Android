@@ -18,20 +18,15 @@
 //Taken from the BluetoothChat sample. This is a modified version of BluetoothChatService.
 package com.CallWall.Android.Services;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.UUID;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -40,23 +35,46 @@ import android.util.Log;
  * thread for performing data transmissions when connected.
  */
 public class BluetoothService {
-    // Debugging
+    // Logging
     private static final String TAG = "BluetoothService";
 
+    //TODO: Unique ID should probably be passed in so this class become agnostic -LC
     // Unique UUID for this application
-    private static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
+    //private static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
+    //  final UUID CallMeServiceId = UUID.fromString("5DFEE4FE-A594-4BFB-B21A-6D7184330669");   //Was commented out
+    //final UUID CallMeServiceId = UUID.fromString("00001105-0000-1000-8000-00805F9B34FB");     //Was used int BluetoothIdentityBroadcaster
+    private final UUID ServiceId;
 
     // Member fields
-    private final BluetoothAdapter mAdapter;
+    private final BluetoothAdapter bluetoothAdapter;
 
-    public BluetoothService() {
-        mAdapter = BluetoothAdapter.getDefaultAdapter();
+    public BluetoothService(UUID serviceId) {
+        ServiceId = serviceId;
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
 
-    public void Send(BluetoothDevice device, byte[] data)
+    public boolean IsEnabled()
     {
-        Log.d(TAG, "Async sending data to " + device.getName());
-        SendThread sender = new SendThread(device,MY_UUID, data);
+        return bluetoothAdapter!=null && bluetoothAdapter.isEnabled();
+    }
+
+    public void Send(byte[] data)
+    {
+        BluetoothDevice targetDevice = null;
+        Log.d(TAG, "Bluetooth enabled and is paired with the following devices");
+        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+        if (pairedDevices.size() > 0) {
+           for (BluetoothDevice device : pairedDevices) {
+                Log.d(TAG, device.getName() + " @ " + device.getAddress());
+                if(targetDevice==null)
+               {
+                    targetDevice = device;
+                }
+            }
+        }
+
+        Log.d(TAG, "Async sending data to " + targetDevice.getName());
+        SendThread sender = new SendThread(targetDevice, ServiceId, data);
         sender.start();
     }
 
@@ -75,7 +93,7 @@ public class BluetoothService {
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
             // Always cancel discovery because it will slow down a connection
-            mAdapter.cancelDiscovery();
+            bluetoothAdapter.cancelDiscovery();
 
             BluetoothSocket socket = null;
             try {

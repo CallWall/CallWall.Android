@@ -11,5 +11,5 @@ import java.util.List;
 
 public interface IdentityBroadcaster
 {
-    void Broadcast(List<String> identities);
+    void Broadcast(String identity);
 }
