@@ -11,10 +11,12 @@ tmp/
 *.bak
 *.swp
 *~.nib
-local.properties
 .classpath
 .settings/
 .loadpath
+
+# Local configuration file (sdk path, etc)
+local.properties
 
 # External tool builders
 .externalToolBuilders/
@@ -165,6 +167,7 @@ pip-log.txt
 #############
 ## Android
 #############
+
 # built application files
 *.apk
 *.ap_
@@ -176,12 +179,5 @@ pip-log.txt
 *.class
 
 # generated files
-bin/
 gen/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Eclipse project files
-.classpath
-.project
+out/
