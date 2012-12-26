@@ -6,8 +6,9 @@ import org.apache.http.util.EncodingUtils;
 import java.util.UUID;
 
 public class BluetoothIdentityBroadcaster implements IdentityBroadcaster {
-    final String logTag = "BluetoothIdentityBroadcaster";
-    private static final UUID BluetoothServiceId = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
+    private static final String logTag = "BluetoothIdentityBroadcaster";
+    //Generated UUID/GUID For CallWall clients.
+    private static final UUID BluetoothServiceId = UUID.fromString("5dfee4fe-a594-4bfb-b21a-6d7184330669");
     BluetoothService bluetoothService;
 
     public BluetoothIdentityBroadcaster()

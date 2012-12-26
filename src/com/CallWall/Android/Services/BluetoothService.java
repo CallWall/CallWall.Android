@@ -36,7 +36,7 @@ import java.util.UUID;
  */
 public class BluetoothService {
     // Logging
-    private static final String TAG = "BluetoothService";
+    private static final String logTag = "BluetoothService";
 
     //TODO: Unique ID should probably be passed in so this class become agnostic -LC
     // Unique UUID for this application
@@ -49,6 +49,7 @@ public class BluetoothService {
     private final BluetoothAdapter bluetoothAdapter;
 
     public BluetoothService(UUID serviceId) {
+        Log.d(logTag, "BluetoothService(serviceId)");
         ServiceId = serviceId;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
@@ -61,19 +62,19 @@ public class BluetoothService {
     public void Send(byte[] data)
     {
         BluetoothDevice targetDevice = null;
-        Log.d(TAG, "Bluetooth enabled and is paired with the following devices");
+        Log.d(logTag, "Bluetooth enabled and is paired with the following devices");
         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
         if (pairedDevices.size() > 0) {
-           for (BluetoothDevice device : pairedDevices) {
-                Log.d(TAG, device.getName() + " @ " + device.getAddress());
+            for (BluetoothDevice device : pairedDevices) {
+                Log.d(logTag, device.getName() + " @ " + device.getAddress());
                 if(targetDevice==null)
-               {
+                {
                     targetDevice = device;
                 }
             }
         }
 
-        Log.d(TAG, "Async sending data to " + targetDevice.getName());
+        Log.d(logTag, "Async sending data to " + targetDevice.getName());
         SendThread sender = new SendThread(targetDevice, ServiceId, data);
         sender.start();
     }
@@ -84,32 +85,32 @@ public class BluetoothService {
         private final byte[] mData;
 
         public SendThread(BluetoothDevice device, UUID serviceId, byte[] data) {
-            Log.d(TAG, "create ConnectedThread");
+            Log.d(logTag, "create ConnectedThread");
             mDevice = device;
             mServiceId = serviceId;
             mData = data;
         }
 
         public void run() {
-            Log.i(TAG, "BEGIN mConnectedThread");
+            Log.i(logTag, "BEGIN mConnectedThread");
             // Always cancel discovery because it will slow down a connection
             bluetoothAdapter.cancelDiscovery();
 
             BluetoothSocket socket = null;
             try {
-                Log.d(TAG,"Creating socket....") ;
+                Log.d(logTag,"Creating socket....") ;
                 socket = mDevice.createRfcommSocketToServiceRecord(mServiceId);
-                Log.d(TAG,"Connecting socket....") ;
+                Log.d(logTag,"Connecting socket....") ;
                 socket.connect();
-                Log.d(TAG,"Getting socket output stream....") ;
+                Log.d(logTag,"Getting socket output stream....") ;
                 OutputStream out = socket.getOutputStream();
-                Log.d(TAG,"Writing bytes to output stream....") ;
+                Log.d(logTag,"Writing bytes to output stream....") ;
                 out.write(mData);
-                Log.d(TAG,"Closing output stream....") ;
+                Log.d(logTag,"Closing output stream....") ;
                 socket.close();
             } catch (IOException e) {
                 //e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                Log.e(TAG, "Failed to send data.", e);
+                Log.e(logTag, "Failed to send data.", e);
             }
         }
     }
