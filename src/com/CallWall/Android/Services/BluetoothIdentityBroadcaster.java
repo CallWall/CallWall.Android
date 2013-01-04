@@ -7,15 +7,13 @@ import java.util.UUID;
 
 public class BluetoothIdentityBroadcaster implements IdentityBroadcaster {
     private static final String logTag = "BluetoothIdentityBroadcaster";
-    //Generated UUID/GUID For CallWall clients.
-    private static final UUID BluetoothServiceId = UUID.fromString("5dfee4fe-a594-4bfb-b21a-6d7184330669");
+    private static final UUID CallWallServiceId = UUID.fromString("5dfee4fe-a594-4bfb-b21a-6d7184330669");
     BluetoothService bluetoothService;
 
     public BluetoothIdentityBroadcaster()
     {
         Log.d(logTag, "BluetoothIdentityBroadcaster()");
-
-        bluetoothService = new BluetoothService(BluetoothServiceId);
+        bluetoothService = new BluetoothService(CallWallServiceId);
     }
 
     public boolean isEnabled()

@@ -33,6 +33,7 @@ public class IncomingCallActivity extends Activity implements IdentityBroadcaste
         tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         tm.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
 
+        //Not all phones/SIM cards expose the current phone number.
         SetDefaultTestNumber(tm.getLine1Number());
     }
 
