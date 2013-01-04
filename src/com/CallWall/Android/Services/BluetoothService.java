@@ -35,17 +35,9 @@ import java.util.UUID;
  * thread for performing data transmissions when connected.
  */
 public class BluetoothService {
-    // Logging
     private static final String logTag = "BluetoothService";
 
-    //TODO: Unique ID should probably be passed in so this class become agnostic -LC
-    // Unique UUID for this application
-    //private static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
-    //  final UUID CallMeServiceId = UUID.fromString("5DFEE4FE-A594-4BFB-B21A-6D7184330669");   //Was commented out
-    //final UUID CallMeServiceId = UUID.fromString("00001105-0000-1000-8000-00805F9B34FB");     //Was used int BluetoothIdentityBroadcaster
     private final UUID ServiceId;
-
-    // Member fields
     private final BluetoothAdapter bluetoothAdapter;
 
     public BluetoothService(UUID serviceId) {
@@ -67,16 +59,11 @@ public class BluetoothService {
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
                 Log.d(logTag, device.getName() + " @ " + device.getAddress());
-                if(targetDevice==null)
-                {
-                    targetDevice = device;
-                }
+                Log.d(logTag, "Async sending data to " + targetDevice.getName());
+                SendThread sender = new SendThread(targetDevice, ServiceId, data);
+                sender.start();
             }
         }
-
-        Log.d(logTag, "Async sending data to " + targetDevice.getName());
-        SendThread sender = new SendThread(targetDevice, ServiceId, data);
-        sender.start();
     }
 
     private class SendThread extends Thread {
@@ -85,14 +72,14 @@ public class BluetoothService {
         private final byte[] mData;
 
         public SendThread(BluetoothDevice device, UUID serviceId, byte[] data) {
-            Log.d(logTag, "create ConnectedThread");
+            Log.d(logTag, "create SendThread");
             mDevice = device;
             mServiceId = serviceId;
             mData = data;
         }
 
         public void run() {
-            Log.i(logTag, "BEGIN mConnectedThread");
+            Log.i(logTag, "SendThread.Run()");
             // Always cancel discovery because it will slow down a connection
             bluetoothAdapter.cancelDiscovery();
 
@@ -109,7 +96,6 @@ public class BluetoothService {
                 Log.d(logTag,"Closing output stream....") ;
                 socket.close();
             } catch (IOException e) {
-                //e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 Log.e(logTag, "Failed to send data.", e);
             }
         }

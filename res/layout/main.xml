@@ -9,5 +9,17 @@
             android:layout_height="wrap_content"
             android:text="Waiting for an incoming call..."
             />
+
+    <android.widget.EditText
+            android:id="@+id/text_testNumber"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+    <android.widget.Button
+            android:id="@+id/button_test"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Test"
+            android:onClick="TestButtonClicked"/>
+
 </LinearLayout>
 

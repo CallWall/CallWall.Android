@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.CallWall.Android.Services.BluetoothIdentityBroadcaster;
 import com.CallWall.Android.Services.CompositeIdentityBroadcaster;
@@ -14,6 +16,7 @@ public class IncomingCallActivity extends Activity implements IdentityBroadcaste
     String logTag = "IncomingCallActivity";
     TelephonyManager tm;
     PhoneStateListener phoneListener;
+    IdentityBroadcaster broadcaster;
 
     /**
      * Called when the activity is first created.
@@ -24,18 +27,41 @@ public class IncomingCallActivity extends Activity implements IdentityBroadcaste
         Log.d(logTag, "onCreate(...)");
         setContentView(R.layout.main);
 
-        CompositeIdentityBroadcaster compositeBroadcasters = new CompositeIdentityBroadcaster();
-        compositeBroadcasters.Add(this);
-        compositeBroadcasters.Add(new BluetoothIdentityBroadcaster());
-        phoneListener = new IncomingCallListener(compositeBroadcasters);
+        this.broadcaster = CreateBroadcaster();
+        phoneListener = new IncomingCallListener(this.broadcaster);
 
         tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         tm.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+
+        SetDefaultTestNumber(tm.getLine1Number());
     }
+
+    private void SetDefaultTestNumber(String phoneNumber) {
+        EditText text_TestNumber = (EditText)findViewById(R.id.text_testNumber);
+        text_TestNumber.getText().clear();
+        text_TestNumber.getText().append(phoneNumber);
+    }
+
     @Override
     public void Broadcast(String identity) {
         String msg = identity + " is ringing";
         Toast.makeText(IncomingCallActivity.this , msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void TestButtonClicked(View view)
+    {
+        Log.i(logTag, "Testing connection");
+        EditText textNumber = (EditText)findViewById(R.id.text_testNumber);
+        String numberToBroadcast = textNumber.getText().toString();
+        broadcaster.Broadcast(numberToBroadcast);
+    }
+
+    private IdentityBroadcaster CreateBroadcaster()
+    {
+        CompositeIdentityBroadcaster compositeBroadcaster = new CompositeIdentityBroadcaster();
+        compositeBroadcaster.Add(this);
+        compositeBroadcaster.Add(new BluetoothIdentityBroadcaster());
+        return compositeBroadcaster;
     }
 }
 

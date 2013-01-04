@@ -26,7 +26,7 @@ public class BluetoothIdentityBroadcaster implements IdentityBroadcaster {
     @Override
     public void Broadcast(String identity) {
 
-        Log.d(logTag, "Broadcast("+identity+")");
+        Log.d(logTag, "Broadcast('" + identity + "')");
         if(!isEnabled())
         {
             Log.d(logTag, "Bluetooth device is not enabled.");

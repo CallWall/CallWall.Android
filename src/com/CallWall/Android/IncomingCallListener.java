@@ -14,7 +14,7 @@ import com.CallWall.Android.Services.IdentityBroadcaster;
  */
 public class IncomingCallListener extends PhoneStateListener
 {
-    private final String logTag = "IncomingCallSpike";
+    private final String logTag = "IncomingCallListener";
     private final IdentityBroadcaster identityBroadcaster;
 
     public IncomingCallListener(IdentityBroadcaster identityBroadcaster)
