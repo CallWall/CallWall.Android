@@ -53,14 +53,13 @@ public class BluetoothService {
 
     public void Send(byte[] data)
     {
-        BluetoothDevice targetDevice = null;
         Log.d(logTag, "Bluetooth enabled and is paired with the following devices");
         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
                 Log.d(logTag, device.getName() + " @ " + device.getAddress());
-                Log.d(logTag, "Async sending data to " + targetDevice.getName());
-                SendThread sender = new SendThread(targetDevice, ServiceId, data);
+                Log.d(logTag, "Async sending data to " + device.getName());
+                SendThread sender = new SendThread(device, ServiceId, data);
                 sender.start();
             }
         }
@@ -87,8 +86,18 @@ public class BluetoothService {
             try {
                 Log.d(logTag,"Creating socket....") ;
                 socket = mDevice.createRfcommSocketToServiceRecord(mServiceId);
-                Log.d(logTag,"Connecting socket....") ;
-                socket.connect();
+
+                //Maybe I need to
+                if(socket.isConnected())
+                {
+                    Log.d(logTag,"Socket is already connected.") ;
+                }
+                else
+                {
+                    Log.d(logTag,"Connecting socket....") ;
+                    socket.connect();
+                }
+
                 Log.d(logTag,"Getting socket output stream....") ;
                 OutputStream out = socket.getOutputStream();
                 Log.d(logTag,"Writing bytes to output stream....") ;

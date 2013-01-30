@@ -8,12 +8,14 @@ import java.util.UUID;
 public class BluetoothIdentityBroadcaster implements IdentityBroadcaster {
     private static final String logTag = "BluetoothIdentityBroadcaster";
     private static final UUID CallWallServiceId = UUID.fromString("5dfee4fe-a594-4bfb-b21a-6d7184330669");
+    private static final UUID CommonSerialBoardServiceId = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     BluetoothService bluetoothService;
 
     public BluetoothIdentityBroadcaster()
     {
         Log.d(logTag, "BluetoothIdentityBroadcaster()");
-        bluetoothService = new BluetoothService(CallWallServiceId);
+        //bluetoothService = new BluetoothService(CallWallServiceId);
+        bluetoothService = new BluetoothService(CommonSerialBoardServiceId);
     }
 
     public boolean isEnabled()
