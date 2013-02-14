@@ -3,7 +3,7 @@ package com.CallWall.Android;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import com.CallWall.Android.Services.IdentityBroadcaster;
+import com.CallWall.Android.Services.ActivatedIdentityObserver;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,12 +15,12 @@ import com.CallWall.Android.Services.IdentityBroadcaster;
 public class IncomingCallListener extends PhoneStateListener
 {
     private final String logTag = "IncomingCallListener";
-    private final IdentityBroadcaster identityBroadcaster;
+    private final ActivatedIdentityObserver identityObserver;
 
-    public IncomingCallListener(IdentityBroadcaster identityBroadcaster)
+    public IncomingCallListener(ActivatedIdentityObserver identityObserver)
     {
-        Log.d(logTag, "IncomingCallListener(" + identityBroadcaster.getClass().getName() + ")");
-        this.identityBroadcaster = identityBroadcaster;
+        Log.d(logTag, "IncomingCallListener(" + identityObserver.getClass().getName() + ")");
+        this.identityObserver = identityObserver;
     }
 
     public void onCallStateChanged(int state, String incomingNumber)
@@ -39,6 +39,6 @@ public class IncomingCallListener extends PhoneStateListener
 
     private void Broadcast(String incomingNumber)
     {
-        this.identityBroadcaster.Broadcast(incomingNumber);
+        this.identityObserver.IdentityActivated(incomingNumber);
     }
 }
