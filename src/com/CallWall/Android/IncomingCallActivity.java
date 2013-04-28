@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -130,10 +131,14 @@ public class IncomingCallActivity extends Activity implements ProfileBroadcaster
 
         ArrayList<PersonalIdentifier> ids = new ArrayList<PersonalIdentifier>();
         PersonalIdentifier phoneId = new PersonalIdentifier("phone","android", phoneNumber);
+        ids.add(phoneId);
         for(String email : allUniqueEmails )
         {
-            PersonalIdentifier id = new PersonalIdentifier("email","android", email);
-            ids.add(id);
+            if (email !=null && !TextUtils.isEmpty(email))
+            {
+                PersonalIdentifier id = new PersonalIdentifier("email","android", email);
+                ids.add(id);
+            }
         }
 
         return new Profile(ids);

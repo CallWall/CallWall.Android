@@ -34,6 +34,7 @@ public final class Profile {
         {
             if(!isFirst) result+=", ";
             result+= id.get_Value();
+            isFirst = false;
         }
         result+="}";
         return result;

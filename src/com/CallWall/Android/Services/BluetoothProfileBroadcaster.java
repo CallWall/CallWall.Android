@@ -1,5 +1,6 @@
 package com.CallWall.Android.Services;
 
+import android.text.TextUtils;
 import android.util.Log;
 import com.CallWall.Android.Entities.PersonalIdentifier;
 import com.CallWall.Android.Entities.Profile;
@@ -27,7 +28,6 @@ public class BluetoothProfileBroadcaster implements ProfileBroadcaster {
 
     @Override
     public void Broadcast(Profile profile) {
-
         //Log.d(logTag, "Broadcast('" + identity + "')");
         if(!isEnabled())
         {
@@ -35,12 +35,16 @@ public class BluetoothProfileBroadcaster implements ProfileBroadcaster {
             return;
         }
 
-
-        int idx = 0;
+        boolean isFirst = true;
         String payload = "";
         for (PersonalIdentifier identity : profile.get_PersonalIdentifiers()) {
-            if(idx++ > 1) payload += "\n";
-            payload += identity.get_Value() ;
+            if(!isFirst) payload += "\n";
+            String value = identity.get_Value();
+            if(value!=null && !TextUtils.isEmpty(value))
+            {
+                payload += value;
+                isFirst = false;
+            }
         }
         if(payload.length()==0)
         {
